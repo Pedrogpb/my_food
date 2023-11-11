@@ -8,4 +8,3 @@ streamlit-folium==0.13.0
 haversine==2.8.0
 scipy==1.10.1
 statsmodels==0.13.5
-PIL==0.2
