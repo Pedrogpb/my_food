@@ -9,11 +9,11 @@ import streamlit as st
 from PIL import Image
 import folium
 from streamlit_folium import folium_static
-from folium.plugins import MarkerCluster
-from folium.plugins import HeatMap
-import plotly.graph_objects as go
-import scipy.stats as stats
-import statsmodels.api as sm
+#from folium.plugins import MarkerCluster
+#from folium.plugins import HeatMap
+#import plotly.graph_objects as go
+#import scipy.stats as stats
+#import statsmodels.api as sm
 
 #=============================================================================
 # FUNÇÕES

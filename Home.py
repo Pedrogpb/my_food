@@ -8,8 +8,8 @@ import streamlit as st
 from PIL import Image
 import folium
 from streamlit_folium import folium_static
-from folium.plugins import MarkerCluster
-import plotly.graph_objects as go
+#from folium.plugins import MarkerCluster
+#import plotly.graph_objects as go
 
 #=============================================================================
 # FUNÇÕES

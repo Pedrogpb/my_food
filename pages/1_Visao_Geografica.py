@@ -8,10 +8,10 @@ import plotly.express as px
 import streamlit as st
 from PIL import Image
 import folium
-from streamlit_folium import folium_static
-from folium.plugins import MarkerCluster
-from folium.plugins import HeatMap
-import plotly.graph_objects as go
+#from streamlit_folium import folium_static
+#from folium.plugins import MarkerCluster
+#from folium.plugins import HeatMap
+#import plotly.graph_objects as go
 
 #=============================================================================
 # FUNÇÕES
