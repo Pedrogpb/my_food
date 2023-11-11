@@ -9,4 +9,4 @@ haversine==2.8.0
 scipy==1.10.1
 statsmodels==0.13.5
 image==1.5.33
-pil-plus=0.2
+pil-plus==0.2
