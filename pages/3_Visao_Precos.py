@@ -255,16 +255,23 @@ with st.container():
 
     if p_var_preco > alpha and p_var_notas > alpha:
         # Ambas as variáveis são aproximadamente normais, use a correlação de Pearson
-        correlacao, _ = stats.pearsonr(df1["Average Cost for two in Dollar"], df1["Aggregate rating"])
+        correlacao, p_value = stats.pearsonr(df1["Average Cost for two in Dollar"], df1["Aggregate rating"])
         tipo_correlacao = "Pearson"
     else:
         # Pelo menos uma das variáveis não é normal, use a correlação de Spearman
-        correlacao, _ = stats.spearmanr(df1["Average Cost for two in Dollar"], df1["Aggregate rating"])
+        correlacao, p_value = stats.spearmanr(df1["Average Cost for two in Dollar"], df1["Aggregate rating"])
         tipo_correlacao = "Spearman"
     
     correlacao = np.round(correlacao, 3)
 
-    st.markdown(f"###### Correlação de {tipo_correlacao}: {correlacao}")
+with st.container():
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown(f"###### Correlação de {tipo_correlacao}: {correlacao}")
+    
+    with col2:
+        st.markdown(f"###### p-Value: {p_value}")
     
     
 #with st.container():

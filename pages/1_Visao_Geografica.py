@@ -12,6 +12,8 @@ from streamlit_folium import folium_static
 from folium.plugins import MarkerCluster
 from folium.plugins import HeatMap
 import plotly.graph_objects as go
+import scipy.stats as stats
+import statsmodels.api as sm
 
 #=============================================================================
 # FUNÇÕES
@@ -182,6 +184,83 @@ with tab1:
             fig.update_layout(title = "Quantidade de Culinárias por País", title_x = 0.19, showlegend=False, xaxis_title = "", yaxis_title = "")
             fig.update_traces(texttemplate='%{y}', textposition='outside')
             st.plotly_chart(fig, use_container_width = True)
+            
+
+    with st.container():
+        
+        st.markdown("""---""")
+        
+        # Criando listas com notas para cada país (necessário para fazer o teste de normalidade e teste de hipôteses)
+        
+        rate_bra = df1[df1["Country Name"] == "Brazil"]["Aggregate rating"]
+        rate_ind = df1[df1["Country Name"] == "India"]["Aggregate rating"]
+        rate_nz = df1[df1["Country Name"] == "New Zeland"]["Aggregate rating"]
+        rate_can = df1[df1["Country Name"] == "Canada"]["Aggregate rating"]
+        rate_usa = df1[df1["Country Name"] == "USA"]["Aggregate rating"]
+        rate_phi = df1[df1["Country Name"] == "Philippines"]["Aggregate rating"]
+        
+        
+        ## Testes de normalidade Shapiro-Wilk
+        
+        test_bra, p_rate_bra = stats.shapiro(rate_bra)
+        test_ind, p_rate_ind = stats.shapiro(rate_ind)
+        test_nz, p_rate_nz = stats.shapiro(rate_nz)
+        test_can, p_rate_can = stats.shapiro(rate_can)
+        test_usa, p_rate_usa = stats.shapiro(rate_usa)
+        test_phi, p_rate_phi = stats.shapiro(rate_phi)
+        
+        # ----------------------------------------------------------------------#
+        # RESULTADO TESTE DE NORMALIDADE
+        #-----------------------------------------------------------------------#
+        
+        #st.markdown("### TESTE DE NORMALIDADE: Nota do restaurante x País")
+        
+        #if all(i < 0.05 for i in [p_rate_bra, p_rate_ind, p_rate_nz, p_rate_can, p_rate_usa, p_rate_phi]):
+         #   st.markdown("Em relação a normalidade: nenhuma das variáveis apresentam distribuição normal.")
+        
+        #elif all(i > 0.05 for i in [p_rate_bra, p_rate_ind, p_rate_nz, p_rate_can, p_rate_usa, p_rate_phi]):
+         #   st.markdown("Em relação a normalidade: Todas as variáveis apresentam distribuição normal.")
+            
+        #else:
+         #   st.markdown("Em relação a normalidade: Pelo menos um dos países apresenta distribuição não paramétrica.")
+        
+        #----------------------------------------------------------------------#
+        
+        
+        
+        # Teste de HipôtesesShapiro-Wilk (dados não parámetricos; não normais)
+               
+        stat, p_value = stats.kruskal(rate_bra, rate_ind, rate_nz, rate_can, rate_usa, rate_phi)
+        
+        fig = px.box(df1, x='Country Name', y='Aggregate rating', title = "Boxplot: Notas dos Restaurantes x País")
+        fig.update_layout(xaxis_title = "", yaxis_title = "Avaliação dos Restaurantes", title_x = 0.3)
+        st.plotly_chart(fig, use_container_width = True)     
+        
+        if p_value < 0.05:
+            st.markdown("###### Teste de Kruskal-Wallis: há diferença estatisticamente significativa entres os grupos.")
+            
+            with st.container():
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown(f"P-value: {p_value}")
+                    
+                with col2:
+                    st.markdown(f"Estatística do teste: {stat}")
+            
+        else:
+            st.markdown("Teste de Kruskal-Wallis: não há evidência suficiente para afirmar que há diferença estatisticamente significativa entre os grupos.")
+            
+            with st.container():
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown(f"P-value: {p_value}")
+                    
+                with col2:
+                    st.markdown(f"Estatística do teste: {stat}")
+                      
+            
 
 
 with tab2:
@@ -213,7 +292,7 @@ with tab2:
             df1_rest_4 = df1_rest_4.sort_values("Aggregate rating", ascending = False).reset_index()
             df1_rest_4_top5 = df1_rest_4.iloc[0:5, :]
             fig = px.bar(df1_rest_4_top5, x = "City", y = "Aggregate rating", color = "Country Name")
-            fig.update_layout(title = "Top 5 Cidades com Melhores Restaurantes", title_x = 0.08, showlegend=True,legend_title = "Países", xaxis_title = "Cidades", yaxis_title = "")
+            fig.update_layout(title = "Top 5 Cidades com Melhores Restaurantes", title_x = 0.08, showlegend=True,legend_title = "Países", xaxis_title = "", yaxis_title = "Restaurantes com nota acima de 4.50")
             fig.update_traces(texttemplate='%{y}', textposition='outside')
             st.plotly_chart(fig, use_container_width = True)
 
@@ -224,10 +303,9 @@ with tab2:
             df1_rest_4 = df1_rest_4.sort_values("Aggregate rating", ascending = False).reset_index()
             df1_rest_4_top5 = df1_rest_4.iloc[0:5, :]
             fig = px.bar(df1_rest_4_top5, x = "City", y = "Aggregate rating", color = "Country Name")
-            fig.update_layout(title = "Top 5 Cidades com Piores Restaurantes", title_x = 0.08, showlegend=True,legend_title = "Países", xaxis_title = "Cidades", yaxis_title = "")
+            fig.update_layout(title = "Top 5 Cidades com Piores Restaurantes", title_x = 0.08, showlegend=True,legend_title = "Países", xaxis_title = "", yaxis_title = "Restaurantes com nota abaixo de 2.50")
             fig.update_traces(texttemplate='%{y}', textposition='outside')
             st.plotly_chart(fig, use_container_width = True)
-                      
             
             
     #with st.container():
